@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class PdfmergerController {
 
@@ -23,7 +25,12 @@ public class PdfmergerController {
 
     @GetMapping(value = "/merged/{bookname}/{mainLanguage}/{secondaryLanguage}")
     public ResponseEntity<byte[]> getMerged(@PathVariable String bookname, @PathVariable String mainLanguage, @PathVariable String secondaryLanguage){
-        byte[] contents = service.getMerged(bookname, mainLanguage, secondaryLanguage);
+        byte[] contents = new byte[0];
+        try {
+            contents = service.getMerged(bookname, mainLanguage, secondaryLanguage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         // Here you have to set the actual filename of your pdf

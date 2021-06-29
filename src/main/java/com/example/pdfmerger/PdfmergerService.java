@@ -1,36 +1,52 @@
 package com.example.pdfmerger;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.tools.PDFMerger;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class PdfmergerService {
-/*
-    @Autowired
-    PDFMergerUtility mergerUtility;
-*/
-    public byte[] getMerged(String bookname, String mainLanguage, String secondaryLanguage){
-        File mainFile = getFile(bookname, mainLanguage);
-        File secondaryFile = getFile(bookname, secondaryLanguage);
 
-        //PDDocument merged = merge(mainFile, secondaryFile);
+    public byte[] getMerged(String bookname, String mainLanguage, String secondaryLanguage) throws IOException {
+        PDDocument mainPDF = getPDF(bookname, mainLanguage);
+        PDDocument secondaryPDF = getPDF(bookname, secondaryLanguage);
+
+        PDDocument merged = merge(mainPDF, secondaryPDF);
         return null;
     }
 
-    public File getFile(String name, String language){
-        return new File("D:\\PublicHalf\\Documents\\Proyectos\\Git\\pdfmerger\\" + name);
+    public PDDocument getPDF(String name, String language) throws IOException {
+        String path = String.format("D:\\PublicHalf\\Documents\\Proyectos\\Git\\pdfmerger\\%s %s.pdf", name, language);
+        File file = new File(path);
+        PDDocument document = PDDocument.load(file);
+        return document;
     }
 
-    public PDDocument merge(File main, File secondary) throws FileNotFoundException {
-        //mergerUtility.addSource(secondary);
-        //mergerUtility.addSource(main);
-        //mergerUtility.appendDocument();
-        return null;
+    public PDDocument merge(PDDocument main, PDDocument secondary) throws FileNotFoundException {
+        PDDocument merged = new PDDocument();
+
+        int mainNumOfPages = main.getNumberOfPages();
+        int secondaryNumOfPages = secondary.getNumberOfPages();
+        int mergedNumOfPages = mainNumOfPages + secondaryNumOfPages;
+
+        for(int i = 0; merged.getNumberOfPages() < mergedNumOfPages; i++){
+            if(i <= mainNumOfPages -1 && null != main.getPage(i)){
+                merged.addPage(main.getPage(i));
+            }
+            if(i <= secondaryNumOfPages -1 && null != secondary.getPage(i)){
+                merged.addPage(secondary.getPage(i));
+            }
+        }
+        return merged;
     }
 
 }
