@@ -1,17 +1,13 @@
 package com.example.pdfmerger;
 
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.tools.PDFMerger;
+import org.apache.pdfbox.tools.PrintPDF;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class PdfmergerService {
@@ -21,7 +17,7 @@ public class PdfmergerService {
         PDDocument secondaryPDF = getPDF(bookname, secondaryLanguage);
 
         PDDocument merged = merge(mainPDF, secondaryPDF);
-        return null;
+        return convertIntoByteArray(merged);
     }
 
     public PDDocument getPDF(String name, String language) throws IOException {
@@ -47,6 +43,12 @@ public class PdfmergerService {
             }
         }
         return merged;
+    }
+
+    private byte[] convertIntoByteArray(PDDocument merged) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        merged.save(stream);
+        return stream.toByteArray();
     }
 
 }
