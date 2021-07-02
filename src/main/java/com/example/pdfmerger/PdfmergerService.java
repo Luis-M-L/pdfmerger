@@ -1,7 +1,6 @@
 package com.example.pdfmerger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.tools.PrintPDF;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -12,16 +11,16 @@ import java.io.IOException;
 @Service
 public class PdfmergerService {
 
-    public byte[] getMerged(String bookname, String mainLanguage, String secondaryLanguage) throws IOException {
-        PDDocument mainPDF = getPDF(bookname, mainLanguage);
-        PDDocument secondaryPDF = getPDF(bookname, secondaryLanguage);
+    public byte[] getMerged(String mainBookName, String secondaryBookName) throws IOException {
+        PDDocument mainPDF = getPDF(mainBookName);
+        PDDocument secondaryPDF = getPDF(secondaryBookName);
 
         PDDocument merged = merge(mainPDF, secondaryPDF);
         return convertIntoByteArray(merged);
     }
 
-    public PDDocument getPDF(String name, String language) throws IOException {
-        String path = String.format("D:\\PublicHalf\\Documents\\Proyectos\\Git\\pdfmerger\\%s %s.pdf", name, language);
+    public PDDocument getPDF(String name) throws IOException {
+        String path = String.format("D:\\PublicHalf\\Documents\\Proyectos\\Git\\pdfmerger\\%s.pdf", name);
         File file = new File(path);
         PDDocument document = PDDocument.load(file);
         return document;

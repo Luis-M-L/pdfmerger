@@ -22,11 +22,11 @@ public class PdfmergerController {
         System.out.println("UP");
     }
 
-    @GetMapping(value = "/merged/{bookname}/{mainLanguage}/{secondaryLanguage}")
-    public ResponseEntity<byte[]> getMerged(@PathVariable String bookname, @PathVariable String mainLanguage, @PathVariable String secondaryLanguage){
+    @GetMapping(value = "/merged/{mainBookName}/{secondaryBookName}")
+    public ResponseEntity<byte[]> getMerged(@PathVariable String mainBookName, @PathVariable String secondaryBookName){
         byte[] contents = new byte[0];
         try {
-            contents = service.getMerged(bookname, mainLanguage, secondaryLanguage);
+            contents = service.getMerged(mainBookName, secondaryBookName);
         } catch (IOException e) {
             e.printStackTrace();
         }
