@@ -1,15 +1,18 @@
 package com.example.pdfmerger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Service
 public class PdfmergerService {
+
+    @Value("${bookrepo.base.path}")
+    public String BASE_PATH;
 
     public byte[] getMerged(String mainBookName, String secondaryBookName) throws IOException {
         PDDocument mainPDF = getPDF(mainBookName);
@@ -20,13 +23,13 @@ public class PdfmergerService {
     }
 
     public PDDocument getPDF(String name) throws IOException {
-        String path = String.format("D:\\PublicHalf\\Documents\\Proyectos\\Git\\pdfmerger\\%s.pdf", name);
+        String path = String.format(BASE_PATH + "%s.pdf", name);
         File file = new File(path);
         PDDocument document = PDDocument.load(file);
         return document;
     }
 
-    public PDDocument merge(PDDocument main, PDDocument secondary) throws FileNotFoundException {
+    public PDDocument merge(PDDocument main, PDDocument secondary) {
         PDDocument merged = new PDDocument();
 
         int mainNumOfPages = main.getNumberOfPages();
